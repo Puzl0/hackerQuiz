@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Level Hacker Terminal</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: 
+                linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        input {
+            background: #000;
+            border: 2px solid #0f0;
+            color: #0f0;
+            padding: 15px;
+            font-size: 1.2em;
+            margin: 20px 0;
+            width: 250px;
+            text-align: center;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 15px #0f0;
+        }
+
+        button {
+            background: #000;
+            border: 2px solid #0f0;
+            color: #0f0;
+            padding: 10px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #0f0;
+            color: #000;
+        }
+
+        .output {
+            margin: 30px 0;
+            font-size: 1.5em;
+            letter-spacing: 3px;
+            min-height: 60px;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .error {
+            color: #f00;
+            animation: shake 0.5s;
+        }
+
+        .next-btn {
+            margin-top: 30px;
+            background: #0f03;
+            border: 2px solid #0f0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        audio {
+            margin: 20px 0;
+            filter: drop-shadow(0 0 5px #0f0);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @media (max-width: 480px) {
+            input {
+                width: 80%;
+                font-size: 1em;
+            }
+            button {
+                width: 80%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Level 1 -->
+    <div class="container active" id="level1">
+        <h1>LEVEL 1</h1>
+        <input type="password" placeholder="ENTER ACCESS CODE">
+        <button id="authBtn1">AUTHENTICATE</button>
+        <div id="output1" class="output"></div>
+        <button id="copyBtn1" class="hidden">COPY MORSE CODE</button>
+        <button class="next-btn hidden" onclick="showLevel(2)">NEXT LEVEL →</button>
+    </div>
+
+    <!-- Level 2 -->
+    <div class="container" id="level2">
+        <h1>LEVEL 2</h1>
+        <input type="password" placeholder="ENTER CODE">
+        <button id="authBtn2">DECRYPT</button>
+        <div id="output2" class="output"></div>
+        <button id="copyBtn2" class="hidden">COPY CODE</button>
+        <button class="next-btn hidden" onclick="showLevel(3)">FINAL LEVEL →</button>
+    </div>
+
+    <!-- Level 3 -->
+    <div class="container" id="level3">
+        <h1>LEVEL 3</h1>
+        <h1>small letters only</h1>
+        <input type="password" placeholder="ENTER DECRYPTION KEY">
+        <button id="authBtn3">DECRYPT</button>
+        <div id="gameSection" class="hidden">
+            <audio id="audioMessage" controls autoplay>
+                <source src="shodan.mp3" type="audio/mpeg">
+            </audio>
+            <div id="output3" class="output">
+                <p>1. I wear clothes of not bright colors</p>
+                <p>2. I am sloth</p>
+                <p>3. I have bad eyesight</p>
+            </div>
+            <input type="text" id="guessInput" placeholder="ENTER YOUR GUESS">
+            <button id="guessBtn">SUBMIT</button>
+            <div id="attempts">ATTEMPTS LEFT: 4</div>
+        </div>
+    </div>
+
+    <script>
+        let currentLevel = 1;
+        let attempts = 4;
+        const correctAnswers = ['zhenya', 'evgeniy'];
+
+        function showLevel(level) {
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.getElementById(`level${level}`).classList.add('active');
+            currentLevel = level;
+        }
+
+        // Level 1 Logic
+        document.getElementById('authBtn1').addEventListener('click', () => {
+            const input = document.querySelector('#level1 input');
+            if (input.value === '2073') {
+                document.getElementById('output1').textContent = '-.-. .-. .. -- .';
+                document.getElementById('copyBtn1').classList.remove('hidden');
+                document.querySelector('#level1 .next-btn').classList.remove('hidden');
+            } else {
+                showError('output1', 'ACCESS DENIED');
+            }
+        });
+
+        // Level 2 Logic
+        document.getElementById('authBtn2').addEventListener('click', () => {
+            const input = document.querySelector('#level2 input');
+            if (input.value.toLowerCase().trim() === 'zodiac') {
+                document.getElementById('output2').textContent = 'rhyzw';
+                document.getElementById('copyBtn2').classList.remove('hidden');
+                document.querySelector('#level2 .next-btn').classList.remove('hidden');
+            } else {
+                showError('output2', 'MISMATCH');
+            }
+        });
+
+        // Level 3 Logic
+        document.getElementById('authBtn3').addEventListener('click', () => {
+            const input = document.querySelector('#level3 input');
+            if (input.value.toLowerCase().trim() === 'crimeisbad') {
+                document.getElementById('gameSection').classList.remove('hidden');
+                const audio = document.getElementById('audioMessage');
+                audio.play().catch(error => {
+                    console.log('Autoplay was prevented');
+                });
+            } else {
+                showError('output3', 'DECRYPTION FAILED');
+            }
+        });
+
+        // Game Logic
+        document.getElementById('guessBtn').addEventListener('click', () => {
+            const guess = document.getElementById('guessInput').value.toLowerCase().trim();
+            attempts--;
+            
+            if (correctAnswers.includes(guess)) {
+                document.getElementById('output3').innerHTML = '<p style="color:#0f0">ACCESS GRANTED! YOU WIN!</p>';
+                document.getElementById('guessBtn').disabled = true;
+                document.getElementById('attempts').textContent = '';
+            } else if (attempts > 0) {
+                document.getElementById('attempts').textContent = `ATTEMPTS LEFT: ${attempts}`;
+                document.getElementById('output3').innerHTML += `<p style="color:#f00">WRONG! ${attempts} ATTEMPTS REMAINING</p>`;
+            } else {
+                document.getElementById('output3').innerHTML = '<p style="color:#f00">GAME OVER!</p>';
+                document.getElementById('guessBtn').disabled = true;
+                document.getElementById('attempts').textContent = '';
+            }
+        });
+
+        // Copy Button 1
+        document.getElementById('copyBtn1').addEventListener('click', async function() {
+            try {
+                const text = document.getElementById('output1').textContent;
+                await navigator.clipboard.writeText(text);
+                this.textContent = 'COPIED!';
+                setTimeout(() => this.textContent = 'COPY MORSE CODE', 2000);
+            } catch (err) {
+                this.textContent = 'COPY FAILED!';
+                setTimeout(() => this.textContent = 'COPY MORSE CODE', 2000);
+            }
+        });
+
+        // Copy Button 2
+        document.getElementById('copyBtn2').addEventListener('click', async function() {
+            try {
+                const text = document.getElementById('output2').textContent;
+                await navigator.clipboard.writeText(text);
+                this.textContent = 'COPIED!';
+                setTimeout(() => this.textContent = 'COPY CODE', 2000);
+            } catch (err) {
+                this.textContent = 'COPY FAILED!';
+                setTimeout(() => this.textContent = 'COPY CODE', 2000);
+            }
+        });
+
+        function showError(outputId, message) {
+            const output = document.getElementById(outputId);
+            output.textContent = message;
+            output.classList.add('error');
+            setTimeout(() => {
+                output.textContent = '';
+                output.classList.remove('error');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
